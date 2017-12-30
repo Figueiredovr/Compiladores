@@ -42,12 +42,12 @@ public class AnalisadorSintatico {
     public final List operAritmeticos = new ArrayList();
     public final List operRelacionais = new ArrayList();
     public final List operLogicos = new ArrayList();
-    public String estado_global;
-    public String estado_semantico;
+    public String estado_global = "";
+    public String estado_semantico = "";
     public Var variavel_atual;
     public Escopo escopo_atual;
-    public String var_nome;
-    public String var_tipo;
+    public String var_nome = "";
+    public String var_tipo = "";
     public Metodo metodo_atual;
 
 
@@ -135,10 +135,14 @@ public class AnalisadorSintatico {
                       escopo_atual.metodos.add(metodo_atual);
                       break;
 
+                      default:
+                      break;
+
                     }
                     break;
 
-
+                default:
+                break;
               }
 
       }

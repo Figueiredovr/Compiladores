@@ -68,8 +68,9 @@ public class AnalisadorSintatico {
     }
 
     public void semantico(){
-//metodo chamado toda vez em que o consumir é executado
-            switch (estado_global){
+      //metodo chamado toda vez em que o consumir é executado
+
+      switch (estado_global){
 
                 case "constates":
                     if (estado_semantico.equals("tipo")){
@@ -112,39 +113,34 @@ public class AnalisadorSintatico {
                     break;
 
                 case "dec_metodo":
-                  switch (estado_semantico) {
-                    case: "init":
-                    metodo_atual = new Metodo(var_tipo,var_nome);
-                    estado_semantico = "espera";
+                    switch (estado_semantico) {
+                      case: "init":
+                      metodo_atual = new Metodo(var_tipo,var_nome);
+                      estado_semantico = "espera";
+                      break;
+
+                      case "espera":
+                      break;
+
+                      case: "parametro":
+                      //adicionaiona parametros do metodo
+                      metodo_atual.add_parametro(new Var(var_tipo,var_nome));
+                      estado_semantico = "espera";
+                      break;
+
+                      case "fim":
+                      //adiciona metodo na tabela
+                      metodo_atual.add_parametro(new Var(var_tipo,var_nome));
+                      escopo_atual.metodos.add(metodo_atual);
+                      break;
+
+                    }
                     break;
 
-                    case "espera":
-                    break;
 
-                    case: "parametro":
-                    //adicionaiona parametros do metodo
-                    metodo_atual.add_parametro(new Var(var_tipo,var_nome));
-                    estado_semantico = "espera";
-                    break;
+              }
 
-                    case "fim":
-                    //adiciona metodo na tabela
-                    metodo_atual.add_parametro(new Var(var_tipo,var_nome));
-                    escopo_atual.metodos.add(metodo_atual);
-                    break;
-
-
-
-            }
-
-
-
-
-
-
-
-
-    }
+      }
 
     public boolean consumir() throws IOException {
 
@@ -187,6 +183,7 @@ public class AnalisadorSintatico {
                         classe(0);
                         if (boleano.contains(lexema)) {
                             estado = 1;
+                            var_tipo = lexema;
                         }
                         break;
                     }
@@ -198,7 +195,6 @@ public class AnalisadorSintatico {
                         estado = 0;
                         break;
                     } else if (token.equals("Identificador")) {
-                        estado_semantico = "tipo";
                         variavel(1);
                         estado = 0;
                         break;
@@ -327,7 +323,7 @@ public class AnalisadorSintatico {
     }
 
     public boolean classe(int estadoAtual) throws IOException {
-        estado_global = "dec_classe";
+        estado_global = "dec_nova_classe";
         int state = estadoAtual;
         while (true) {
             if (consumir()) {
@@ -337,6 +333,7 @@ public class AnalisadorSintatico {
                 case 0:
                     if (token.equals("Identificador")) {
                         state = 1;
+                        escopo_atual.add(lexema);
                         break;
                     }
                     salvarArq.printf("Linha: %s - Falta Identificador.%n", linhaAtual);

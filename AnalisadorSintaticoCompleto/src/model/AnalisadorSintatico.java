@@ -159,6 +159,7 @@ public class AnalisadorSintatico {
             linhaAtual = s[0];
             lexema = s[1];
             token = s[2];
+
             if (lexema.equals("{")) {
               escopo_atual = new Escopo(escopo_atual);
             } else if (lexema.equals("}")) {
@@ -474,6 +475,17 @@ public class AnalisadorSintatico {
 
                 case 4:
                     if (lexema.equals("{")) {
+                        // colocando parametros do metodo como variaveis para o novo escopo
+                        Escopo antigo = escopo_atual.pai;
+                        int tamanho = antigo.metodos.size();
+                        Metodo ultimo_metodo = antigo.metodos.get(tamanho-1);
+                        
+                        while (!(ultimo_metodo.parametro.isEmpty())){
+                          if (ultimo_metodo.parametro.size()-1 > 0) {
+                              escopo_atual.variaveis.add(ultimo_metodo.parametro.remove(ultimo_metodo.parametro.size()-1));
+                          }
+
+                        }
                         if (conteudo_metodo()) {
                           if (lexema.equals("}")) {
                             state = 10;

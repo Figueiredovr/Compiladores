@@ -49,7 +49,7 @@ public class AnalisadorSintatico {
     public String var_nome = "";
     public String var_tipo = "";
     public Metodo metodo_atual;
-
+    public ArrayList lista_tipos;
 
     public AnalisadorSintatico(String arquivo) {
 
@@ -147,6 +147,49 @@ public class AnalisadorSintatico {
               }
 
       }
+
+    public String buscar_tipo(String nome ){
+
+      // Faz uma busca em profundidade para encontrar o tipo de uma variavel atraves o nome
+      ArrayList lista_variaveis;
+      Escopo escopo = escopo_atual;
+
+      while (escopo.pai != null){
+
+
+          lista_variaveis = escopo.variaveis;
+          for(int i = 0; i<= lista_variaveis.size() ; i++){
+              if(nome.equals(lista_variaveis[i].nome)){
+                  return lista_variaveis[i].tipo;
+              }
+          }
+          escopo = escopo.pai;
+      }
+
+      lista_variaveis = escopo.variaveis;
+      for(int i = 0; i<= lista_variaveis.size() ; i++){
+          if(nome.equals(lista_variaveis[i].nome)){
+              return lista_variaveis[i].tipo;
+          }
+      }
+      return "ERRO";
+
+    }
+
+    public void verificar_lista_tipos(){
+
+      arq2 = new FileWriter("Analisador_Semantico.txt");
+      salvarArq2 = new PrintWriter(arq);
+      String tipo_aux = lista_tipos.get(0);
+      
+      for (int i = 0 ; i <= lista_tipos.size() - 1 ; i++ ) {
+          if (!(lista_tipos.get(i).equals(tipo_aux))) {
+                salvarArq2.printf("Linha: %s - Erro de compatibilidade de tipos.", linhaAtual);
+          }
+      }
+
+      lista_tipos.clear();
+    }
 
     public boolean consumir() throws IOException {
 
@@ -479,7 +522,7 @@ public class AnalisadorSintatico {
                         Escopo antigo = escopo_atual.pai;
                         int tamanho = antigo.metodos.size();
                         Metodo ultimo_metodo = antigo.metodos.get(tamanho-1);
-                        
+
                         while (!(ultimo_metodo.parametro.isEmpty())){
                           if (ultimo_metodo.parametro.size()-1 > 0) {
                               escopo_atual.variaveis.add(ultimo_metodo.parametro.remove(ultimo_metodo.parametro.size()-1));
@@ -564,6 +607,7 @@ public class AnalisadorSintatico {
                         break;
                     } else if (token.equals("Identificador")) {
                         state = 1;
+                        lista_tipos.add(buscar_tipo(lexema));
                         break;
                     }
                     return true;
@@ -843,6 +887,7 @@ public class AnalisadorSintatico {
                 case 0:
                     if (token.equals("Identificador")) {
                         state = 1;
+                        lista_tipos.add(buscar_tipo(lexema));
                         break;
                     }
                     state = 15;
@@ -861,6 +906,11 @@ public class AnalisadorSintatico {
 
                 case 2:
                     if (token.equals("Número")) {
+                        if (lexema.contains(".")) {
+                          lista_tipos.add("float");
+                        }else{
+                          lista_tipos.add("int");
+                        }
                         state = 3;
                         break;
                     }
@@ -888,6 +938,11 @@ public class AnalisadorSintatico {
 
                 case 5:
                     if (token.equals("Número")) {
+                        if (lexema.contains(".")) {
+                          lista_tipos.add("float");
+                        }else{
+                          lista_tipos.add("int");
+                        }
                         expLogica();
                         if (lexema.equals(";")) {
                             return true;
@@ -896,6 +951,8 @@ public class AnalisadorSintatico {
                         break;
                     } else if (token.equals("Identificador")) {
                         state = 6;
+                        lista_tipos.add(buscar_tipo(lexema));
+
                         break;
                     }
 
@@ -914,6 +971,7 @@ public class AnalisadorSintatico {
                 case 7:
                     chamadaMetodo(3);
                     if (lexema.equals(";")) {
+                        verificar_lista_tipos();
                         return true;
                     }
                     state = 15;
@@ -1143,8 +1201,14 @@ public class AnalisadorSintatico {
                     }
                     if (token.equals("Identificador")) {
                         state = 1;
+                        lista_tipos.add(buscar_tipo(lexema));
                         break;
                     } else if (token.equals("Número")) {
+                      if (lexema.contains(".")) {
+                        lista_tipos.add("float");
+                      }else{
+                        lista_tipos.add("int");
+                      }
                         state = 2;
                         break;
                     }
@@ -1173,6 +1237,11 @@ public class AnalisadorSintatico {
                 case 30:
                     if (token.equals("Número")) {
                         state = 31;
+                        if (lexema.contains(".")) {
+                          lista_tipos.add("float");
+                        }else{
+                          lista_tipos.add("int");
+                        }
                         break;
                     }
                     state = 15;
@@ -1220,9 +1289,15 @@ public class AnalisadorSintatico {
                 case 4:
                     if (token.equals("Identificador")) {
                         state = 1;
+                        lista_tipos.add(buscar_tipo(lexema));
                         break;
                     } else if (token.equals("Número")) {
                         state = 2;
+                        if (lexema.contains(".")) {
+                          lista_tipos.add("float");
+                        }else{
+                          lista_tipos.add("int");
+                        }
                         break;
                     }
                     if (lexema.equals("(")) {
@@ -1259,11 +1334,18 @@ public class AnalisadorSintatico {
                         break;
                     } else if (token.equals("Identificador")) {
                         state = 1;
+                        lista_tipos.add(buscar_tipo(lexema));
                         break;
                     } else if (token.equals("Número")) {
                         state = 9;
+                        if (lexema.contains(".")) {
+                          lista_tipos.add("float");
+                        }else{
+                          lista_tipos.add("int");
+                        }
                         break;
                     } else if (boleano.contains(lexema)) {
+                        lista_tipos.add("bool");
                         state = 3;
                         break;
                     }
@@ -1285,12 +1367,14 @@ public class AnalisadorSintatico {
 
                 case 4:
                     if (token.equals("Identificador")) {
+                        lista_tipos.add(buscar_tipo(lexema));
                         state = 5;
                         break;
                     } else if (lexema.equals("(")) {
                         state = 0;
                         break;
                     } else if (boleano.contains(lexema)) {
+                        lista_tipos.add("bool");
                         state = 10;
                         break;
                     }
@@ -1355,6 +1439,11 @@ public class AnalisadorSintatico {
 
                 case 20:
                     if (token.equals("Número")) {
+                        if (lexema.contains(".")) {
+                          lista_tipos.add("float");
+                        }else{
+                          lista_tipos.add("int");
+                        }
                         state = 21;
                         break;
                     }
@@ -1392,6 +1481,11 @@ public class AnalisadorSintatico {
 
                 case 30:
                     if (token.equals("Número")) {
+                        if (lexema.contains(".")) {
+                          lista_tipos.add("float");
+                        }else{
+                          lista_tipos.add("int");
+                        }
                         state = 31;
                         break;
                     }
@@ -1479,10 +1573,16 @@ public class AnalisadorSintatico {
                         break;
                     }
                     if (token.equals("Identificador")) {
+                        lista_tipos.add(buscar_tipo(lexema));
                         state = 1;
                         break;
                     } else if (token.equals("Número")) {
                         state = 2;
+                        if (lexema.contains(".")) {
+                          lista_tipos.add("float");
+                        }else{
+                          lista_tipos.add("int");
+                        }
                         break;
                     }
 
@@ -1512,6 +1612,11 @@ public class AnalisadorSintatico {
 
                 case 30:
                     if (token.equals("Número")) {
+                      if (lexema.contains(".")) {
+                        lista_tipos.add("float");
+                      }else{
+                        lista_tipos.add("int");
+                      }
                         state = 31;
                         break;
                     }
@@ -1563,6 +1668,11 @@ public class AnalisadorSintatico {
                         state = 0;
                         break;
                     } else if (token.equals("Número")) {
+                      if (lexema.contains(".")) {
+                        lista_tipos.add("float");
+                      }else{
+                        lista_tipos.add("int");
+                      }
                         state = 2;
                         break;
                     }

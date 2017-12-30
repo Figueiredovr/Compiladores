@@ -48,6 +48,7 @@ public class AnalisadorSintatico {
     public Escopo escopo_atual;
     public String var_nome;
     public String var_tipo;
+    public Metodo metodo_atual;
 
 
     public AnalisadorSintatico(String arquivo) {
@@ -114,7 +115,7 @@ public class AnalisadorSintatico {
 
                 case "dec_metodo":
                     switch (estado_semantico) {
-                      case: "init":
+                      case "init":
                       metodo_atual = new Metodo(var_tipo,var_nome);
                       estado_semantico = "espera";
                       break;
@@ -122,7 +123,7 @@ public class AnalisadorSintatico {
                       case "espera":
                       break;
 
-                      case: "parametro":
+                      case "parametro":
                       //adicionaiona parametros do metodo
                       metodo_atual.add_parametro(new Var(var_tipo,var_nome));
                       estado_semantico = "espera";
@@ -333,7 +334,7 @@ public class AnalisadorSintatico {
                 case 0:
                     if (token.equals("Identificador")) {
                         state = 1;
-                        escopo_atual.add(lexema);
+                        escopo_atual.classes.add(lexema);
                         break;
                     }
                     salvarArq.printf("Linha: %s - Falta Identificador.%n", linhaAtual);

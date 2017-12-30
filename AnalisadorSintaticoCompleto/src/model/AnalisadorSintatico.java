@@ -80,39 +80,44 @@ public class AnalisadorSintatico {
                       escopo_atual.variaveis.add(variavel_atual);
 
                     } else if(estado_semantico.equals("init")){
-                      variavel_atual = new Var("","");                      
+                      variavel_atual = new Var("","");
                     }
 
                     break;
 
                 case "dec_variavel":
                     switch(estado_semantico){
-                    
+
                         case "tipo":
-                            variavel_atual.tipo_da_variavel = lexema;                           
+                            variavel_atual.tipo_da_variavel = lexema;
                             break;
-                        
+
                         case "nome":
                             variavel_atual.nome_variavel = lexema;
-                            escopo_atual.variaveis.add(variavel_atual);                            
-                            break;    
-                            
+                            escopo_atual.variaveis.add(variavel_atual);
+                            break;
+
                         case "init":
                             variavel_atual = new Var("","");
                             break;
-                            
+
                         case "dec_classe":
-                            escopo_atual.variaveis.add(new Var(var_tipo,var_nome));                            
+                            escopo_atual.variaveis.add(new Var(var_tipo,var_nome));
                             break;
-                            
+
                         default :
                             break;
                     }
 
+                case "dec_metodo":
+
+                break;
 
                 break;
 
             }
+
+
 
 
 
@@ -221,7 +226,7 @@ public class AnalisadorSintatico {
         estado_global = "dec_variavel";
         int state = estadoAtual;
         while (true) {
-   
+
             if (consumir()) {
                 return false;
             }
@@ -254,7 +259,7 @@ public class AnalisadorSintatico {
                         state = 3;
                         var_nome = lexema;
                         estado_semantico = "dec_classe";
-                        
+
                         break;
                     }
                     state = 15;
@@ -416,6 +421,7 @@ public class AnalisadorSintatico {
                     }
 
                     if (lexema.equals("(")) {
+                      estado_global = "dec_metodo";
                         if (parametro()) {
                             state = 3;
                             break;
@@ -435,6 +441,11 @@ public class AnalisadorSintatico {
                 case 4:
                     if (lexema.equals("{")) {
                         if (conteudo_metodo()) {
+                          if (lexema.equals("}")) {
+                            state = 10;
+                          }else{
+                            return false;
+                          }
                             state = 5;
                             break;
                         }
@@ -449,6 +460,18 @@ public class AnalisadorSintatico {
                     }
                     state = 15;
                     break;
+
+              case 10:
+              if (tipo.contains(lexema)) {
+                  state = 1;
+                  var_tipo = lexema;
+                  break;
+              } else if (lexema.equals("}")) {
+                return true;
+              } else {
+                state =15;
+              }
+              break;
 
                 case 15:
                     salvarArq.printf("Linha: %s - Erro no conteúdo da calsse.%n", linhaAtual);

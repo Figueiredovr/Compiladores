@@ -57,6 +57,7 @@ public class AnalisadorSintatico {
         tipo.add("bool");
         tipo.add("string");
         tipo.add("float");
+        this.escopo_atual = new Escopo();
 
         boleano.add("true");
         boleano.add("false");
@@ -158,7 +159,11 @@ public class AnalisadorSintatico {
             linhaAtual = s[0];
             lexema = s[1];
             token = s[2];
-
+            if (lexema.equals("{")) {
+              escopo_atual = new Escopo(escopo_atual);
+            } else if (lexema.equals("}")) {
+              escopo_atual =  escopo_atual.pai;
+            }
             return false;
         }
 

@@ -50,6 +50,7 @@ public class AnalisadorSintatico {
     public String var_tipo = "";
     public Metodo metodo_atual;
     public ArrayList lista_tipos;
+    public ArrayList lista_parametros;
 
     public AnalisadorSintatico(String arquivo) {
 
@@ -158,7 +159,7 @@ public class AnalisadorSintatico {
 
 
           lista_variaveis = escopo.variaveis;
-          for(int i = 0; i<= lista_variaveis.size() ; i++){
+          for(int i = 0; i< lista_variaveis.size() ; i++){
               if(nome.equals(lista_variaveis[i].nome)){
                   return lista_variaveis[i].tipo;
               }
@@ -167,7 +168,7 @@ public class AnalisadorSintatico {
       }
 
       lista_variaveis = escopo.variaveis;
-      for(int i = 0; i<= lista_variaveis.size() ; i++){
+      for(int i = 0; i< lista_variaveis.size() ; i++){
           if(nome.equals(lista_variaveis[i].nome)){
               return lista_variaveis[i].tipo;
           }
@@ -178,10 +179,7 @@ public class AnalisadorSintatico {
 
     public void verificar_lista_tipos(){
 
-      arq2 = new FileWriter("Analisador_Semantico.txt");
-      salvarArq2 = new PrintWriter(arq);
       String tipo_aux = lista_tipos.get(0);
-      
       for (int i = 0 ; i <= lista_tipos.size() - 1 ; i++ ) {
           if (!(lista_tipos.get(i).equals(tipo_aux))) {
                 salvarArq2.printf("Linha: %s - Erro de compatibilidade de tipos.", linhaAtual);
@@ -189,6 +187,19 @@ public class AnalisadorSintatico {
       }
 
       lista_tipos.clear();
+    }
+
+    public void verificar_lista_parametros(){
+
+      String tipo_aux = lista_parametros.get(0);
+
+      for (int i = 0 ; i <= lista_parametros.size() - 1 ; i++ ) {
+          if (!(lista_parametros.get(i).equals(tipo_aux))) {
+                salvarArq2.printf("Linha: %s - Erro de compatibilidade de parametros.", linhaAtual);
+          }
+      }
+
+      lista_parametros.clear();
     }
 
     public boolean consumir() throws IOException {
@@ -217,6 +228,10 @@ public class AnalisadorSintatico {
     public void analisadorSintatico() throws IOException {
         arq = new FileWriter("Analisador.txt");
         salvarArq = new PrintWriter(arq);
+
+        arq2 = new FileWriter("Analisador_Semantico.txt");
+        salvarArq2 = new PrintWriter(arq);
+
 
         while (true) {
             if (consumir()) {
@@ -527,8 +542,8 @@ public class AnalisadorSintatico {
                           if (ultimo_metodo.parametro.size()-1 > 0) {
                               escopo_atual.variaveis.add(ultimo_metodo.parametro.remove(ultimo_metodo.parametro.size()-1));
                           }
-
                         }
+
                         if (conteudo_metodo()) {
                           if (lexema.equals("}")) {
                             state = 10;
@@ -1751,6 +1766,7 @@ public class AnalisadorSintatico {
                 case 3:
                     if (token.equals("Identificador")) {
                         state = 4;
+                        lista_parametros.add(buscar_tipo(lexema));
                         break;
                     }
                     state = 15;
@@ -1761,6 +1777,7 @@ public class AnalisadorSintatico {
                         state = 3;
                         break;
                     } else if (lexema.equals(")")) {
+                        verificar_lista_parametros();
                         return true;
                     }
                     state = 15;

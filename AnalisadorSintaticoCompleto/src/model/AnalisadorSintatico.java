@@ -24,7 +24,9 @@ public class AnalisadorSintatico {
     public BufferedReader codigoFonte;
     public String arquivo;
     public FileWriter arq;
+    public FileWriter arq2;
     public PrintWriter salvarArq;
+    public PrintWriter salvarArq2;
 
     public Stack pilha = new Stack();
     public String lexema = "";
@@ -49,9 +51,9 @@ public class AnalisadorSintatico {
     public String var_nome = "";
     public String var_tipo = "";
     public Metodo metodo_atual;
-    public ArrayList lista_tipos;
-    public ArrayList lista_parametros;
-
+    public List lista_tipos = new ArrayList();
+    public List lista_parametros = new ArrayList();
+    
     public AnalisadorSintatico(String arquivo) {
 
         tipo.add("int");
@@ -154,23 +156,27 @@ public class AnalisadorSintatico {
       // Faz uma busca em profundidade para encontrar o tipo de uma variavel atraves o nome
       ArrayList lista_variaveis;
       Escopo escopo = escopo_atual;
+      Var variavel_aux;
 
       while (escopo.pai != null){
 
 
-          lista_variaveis = escopo.variaveis;
+          lista_variaveis = (ArrayList) escopo.variaveis;
           for(int i = 0; i< lista_variaveis.size() ; i++){
-              if(nome.equals(lista_variaveis[i].nome)){
-                  return lista_variaveis[i].tipo;
+              variavel_aux = (Var) lista_variaveis.get(i);
+              if(nome.equals(variavel_aux.nome_variavel)){
+                  
+                  return variavel_aux.tipo_da_variavel;
               }
           }
           escopo = escopo.pai;
       }
 
-      lista_variaveis = escopo.variaveis;
+      lista_variaveis = (ArrayList) escopo.variaveis;
       for(int i = 0; i< lista_variaveis.size() ; i++){
-          if(nome.equals(lista_variaveis[i].nome)){
-              return lista_variaveis[i].tipo;
+          variavel_aux = (Var) lista_variaveis.get(i);
+          if(nome.equals(variavel_aux.nome_variavel)){
+              return variavel_aux.tipo_da_variavel;
           }
       }
       return "ERRO";
@@ -179,7 +185,7 @@ public class AnalisadorSintatico {
 
     public void verificar_lista_tipos(){
 
-      String tipo_aux = lista_tipos.get(0);
+      String tipo_aux = (String) lista_tipos.get(0);
       for (int i = 0 ; i <= lista_tipos.size() - 1 ; i++ ) {
           if (!(lista_tipos.get(i).equals(tipo_aux))) {
                 salvarArq2.printf("Linha: %s - Erro de compatibilidade de tipos.", linhaAtual);
@@ -191,7 +197,7 @@ public class AnalisadorSintatico {
 
     public void verificar_lista_parametros(){
 
-      String tipo_aux = lista_parametros.get(0);
+      String tipo_aux = (String) lista_parametros.get(0);
 
       for (int i = 0 ; i <= lista_parametros.size() - 1 ; i++ ) {
           if (!(lista_parametros.get(i).equals(tipo_aux))) {
@@ -230,7 +236,7 @@ public class AnalisadorSintatico {
         salvarArq = new PrintWriter(arq);
 
         arq2 = new FileWriter("Analisador_Semantico.txt");
-        salvarArq2 = new PrintWriter(arq);
+        salvarArq2 = new PrintWriter(arq2);
 
 
         while (true) {
@@ -272,7 +278,9 @@ public class AnalisadorSintatico {
             }
         }
         salvarArq.printf("Analise Sintática Concluída!");
+        salvarArq2.printf("Analise Semantica Concluída!");
         arq.close();
+        arq2.close();
 
     }
 
@@ -536,7 +544,7 @@ public class AnalisadorSintatico {
                         // colocando parametros do metodo como variaveis para o novo escopo
                         Escopo antigo = escopo_atual.pai;
                         int tamanho = antigo.metodos.size();
-                        Metodo ultimo_metodo = antigo.metodos.get(tamanho-1);
+                        Metodo ultimo_metodo = (Metodo) antigo.metodos.get(tamanho-1);
 
                         while (!(ultimo_metodo.parametro.isEmpty())){
                           if (ultimo_metodo.parametro.size()-1 > 0) {

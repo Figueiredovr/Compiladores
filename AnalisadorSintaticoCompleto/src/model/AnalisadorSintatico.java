@@ -53,7 +53,7 @@ public class AnalisadorSintatico {
     public Metodo metodo_atual;
     public List lista_tipos = new ArrayList();
     public List lista_parametros = new ArrayList();
-    
+
     public AnalisadorSintatico(String arquivo) {
 
         tipo.add("int");
@@ -83,7 +83,10 @@ public class AnalisadorSintatico {
 
                     } else if (estado_semantico.equals("nome")){
                       variavel_atual.nome_variavel = lexema;
-                      escopo_atual.variaveis.add(variavel_atual);
+                      //escopo_atual.variaveis.add(variavel_atual);
+                      if (!escopo_atual.add_variavel(variavel_atual)) {
+                          salvarArq2.printf("Linha: %s - Variavel ja existe nesse escopo.", linhaAtual);
+                      }
 
                     } else if(estado_semantico.equals("init")){
                       variavel_atual = new Var("","");
@@ -100,7 +103,9 @@ public class AnalisadorSintatico {
 
                         case "nome":
                             variavel_atual.nome_variavel = lexema;
-                            escopo_atual.variaveis.add(variavel_atual);
+                            if (!escopo_atual.add_variavel(variavel_atual)) {
+                                salvarArq2.printf("Linha: %s - Variavel ja existe nesse escopo.", linhaAtual);
+                            }
                             break;
 
                         case "init":
@@ -108,7 +113,9 @@ public class AnalisadorSintatico {
                             break;
 
                         case "dec_classe":
-                            escopo_atual.variaveis.add(new Var(var_tipo,var_nome));
+                        if (!escopo_atual.add_variavel(variavel_atual)) {
+                            salvarArq2.printf("Linha: %s - Variavel ja existe nesse escopo.", linhaAtual);
+                        } 
                             break;
 
                         default :
@@ -165,7 +172,7 @@ public class AnalisadorSintatico {
           for(int i = 0; i< lista_variaveis.size() ; i++){
               variavel_aux = (Var) lista_variaveis.get(i);
               if(nome.equals(variavel_aux.nome_variavel)){
-                  
+
                   return variavel_aux.tipo_da_variavel;
               }
           }

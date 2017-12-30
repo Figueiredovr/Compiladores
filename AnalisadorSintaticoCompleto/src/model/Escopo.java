@@ -23,6 +23,20 @@ public class Escopo {
 
   }
 
+  public boolean add_variavel (Var nova){
+    Var variavel;
+    for (int i = 0 ; i< this.variaveis.size(); i++){
+      variavel = (Var) this.variaveis.get(i);
+      if (nova.nome_variavel.equals(variavel.var_nome)) {
+        return false;
+      }
+    }
+
+    this.variaveis.add(nova);
+    return true;
+
+  }
+
 
 
 }

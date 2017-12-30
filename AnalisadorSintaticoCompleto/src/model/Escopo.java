@@ -20,7 +20,7 @@ public class Escopo {
 
   public Escopo pai;
   public List variaveis =  new ArrayList();
-  public List metodo =  new ArrayList();
+  public List metodos =  new ArrayList();
 
   public Escopo (){}
 

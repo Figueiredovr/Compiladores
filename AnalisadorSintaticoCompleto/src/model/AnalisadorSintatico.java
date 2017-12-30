@@ -68,7 +68,7 @@ public class AnalisadorSintatico {
     }
 
     public void semantico(){
-
+//metodo chamado toda vez em que o consumir é executado
             switch (estado_global){
 
                 case "constates":
@@ -109,11 +109,31 @@ public class AnalisadorSintatico {
                             break;
                     }
 
+                    break;
+
                 case "dec_metodo":
+                  switch (estado_semantico) {
+                    case: "init":
+                    metodo_atual = new Metodo(var_tipo,var_nome);
+                    estado_semantico = "espera";
+                    break;
 
-                break;
+                    case "espera":
+                    break;
 
-                break;
+                    case: "parametro":
+                    //adicionaiona parametros do metodo
+                    metodo_atual.add_parametro(new Var(var_tipo,var_nome));
+                    estado_semantico = "espera";
+                    break;
+
+                    case "fim":
+                    //adiciona metodo na tabela
+                    metodo_atual.add_parametro(new Var(var_tipo,var_nome));
+                    escopo_atual.metodos.add(metodo_atual);
+                    break;
+
+
 
             }
 
@@ -396,7 +416,6 @@ public class AnalisadorSintatico {
                     if (token.equals("Identificador")) {
                         state = 2;
                         var_nome = lexema;
-                        estado_semantico = "dec_classe";
                         break;
                     }
                     state = 15;
@@ -405,11 +424,17 @@ public class AnalisadorSintatico {
                 case 2:
                     if (lexema.equals(";")) {
                         if (variavel(4)) {
+                          //declaração de variavel dentro da classe
+                          estado_semantico = "dec_variavel";
+                          estado_semantico = "dec_classe";
                             state = 0;
                             break;
                         }
                     } else if (lexema.equals(",")) {
                         if (variavel(2)) {
+                          //declaração de variavel dentro da classe
+                          estado_semantico = "dec_variavel";
+                          estado_semantico = "dec_classe";
                             state = 0;
                             break;
                         }
@@ -421,7 +446,9 @@ public class AnalisadorSintatico {
                     }
 
                     if (lexema.equals("(")) {
+                      //declaração de metodo
                       estado_global = "dec_metodo";
+                      estado_semantico = "init";
                         if (parametro()) {
                             state = 3;
                             break;
@@ -469,7 +496,7 @@ public class AnalisadorSintatico {
               } else if (lexema.equals("}")) {
                 return true;
               } else {
-                state =15;
+                state = 15;
               }
               break;
 
@@ -539,7 +566,7 @@ public class AnalisadorSintatico {
     }
 
     public boolean parametro() throws IOException {
-        estado_global = "parametro";
+        estado_global = "dec_metodo";
         int state = 0;
 
         while (true) {
@@ -551,6 +578,7 @@ public class AnalisadorSintatico {
                 case 0:
                     if (tipo.contains(lexema)) {
                         state = 1;
+                        var_tipo = lexema;
                         break;
                     }
                     return false;
@@ -558,6 +586,7 @@ public class AnalisadorSintatico {
                 case 1:
                     if (token.equals("Identificador")) {
                         state = 2;
+                        var_nome = lexema;
                         break;
                     }
                     return false;
@@ -570,8 +599,10 @@ public class AnalisadorSintatico {
 
                     if (lexema.equals(",")) {
                         state = 0;
+                        estado_semantico = "parametro";
                         break;
                     }
+                    estado_semantico = "fim";
                     return true;
 
                 case 3:
@@ -591,8 +622,10 @@ public class AnalisadorSintatico {
                 case 5:
                     if (lexema.equals(",")) {
                         state = 0;
+                        estado_semantico = "parametro";
                         break;
                     }
+                    estado_semantico = "fim";
                     return true;
             }
         }

@@ -85,7 +85,7 @@ public class AnalisadorSintatico {
                       variavel_atual.nome_variavel = lexema;
                       //escopo_atual.variaveis.add(variavel_atual);
                       if (!escopo_atual.add_variavel(variavel_atual)) {
-                          salvarArq2.printf("Linha: %s - Variavel ja existe nesse escopo.", linhaAtual);
+                          salvarArq2.printf("Linha: %s - Variavel ja existe nesse escopo ou tipo é invalido.", linhaAtual);
                       }
 
                     } else if(estado_semantico.equals("init")){
@@ -104,7 +104,7 @@ public class AnalisadorSintatico {
                         case "nome":
                             variavel_atual.nome_variavel = lexema;
                             if (!escopo_atual.add_variavel(variavel_atual)) {
-                                salvarArq2.printf("Linha: %s - Variavel ja existe nesse escopo.", linhaAtual);
+                                salvarArq2.printf("Linha: %s - Variavel ja existe nesse escopo ou tipo é invalido.", linhaAtual);
                             }
                             break;
 
@@ -114,7 +114,7 @@ public class AnalisadorSintatico {
 
                         case "dec_classe":
                         if (!escopo_atual.add_variavel(variavel_atual)) {
-                            salvarArq2.printf("Linha: %s - Variavel ja existe nesse escopo.", linhaAtual);
+                            salvarArq2.printf("Linha: %s - Variavel ja existe nesse escopo ou tipo é invalido.", linhaAtual);
                         }
                             break;
 

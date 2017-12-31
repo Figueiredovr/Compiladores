@@ -17,7 +17,7 @@ import java.util.Stack;
 
 /**
  *
- * @author Anderson Queiroz
+ * @author Anderson Queiroz, Victor Figueiredo
  */
 public class AnalisadorSintatico {
 
@@ -73,7 +73,7 @@ public class AnalisadorSintatico {
     }
 
     public void semantico(){
-      //metodo chamado toda vez em que o consumir é executado
+      //Metodo que adiciona as variaveis e metodos nas tabelas do escopo atual, esse metodo é chamado toda vez em que o consumir é executado
 
       switch (estado_global){
 
@@ -115,7 +115,7 @@ public class AnalisadorSintatico {
                         case "dec_classe":
                         if (!escopo_atual.add_variavel(variavel_atual)) {
                             salvarArq2.printf("Linha: %s - Variavel ja existe nesse escopo.", linhaAtual);
-                        } 
+                        }
                             break;
 
                         default :
@@ -191,7 +191,7 @@ public class AnalisadorSintatico {
     }
 
     public void verificar_lista_tipos(){
-
+      //verifica se os tipos utilizaos em uma atribuicao são todos iguais
       String tipo_aux = (String) lista_tipos.get(0);
       for (int i = 0 ; i <= lista_tipos.size() - 1 ; i++ ) {
           if (!(lista_tipos.get(i).equals(tipo_aux))) {
@@ -203,7 +203,7 @@ public class AnalisadorSintatico {
     }
 
     public void verificar_lista_parametros(){
-
+      //verifica se os parametros em uma chamada de metodo condizem com os declarados
       String tipo_aux = (String) lista_parametros.get(0);
 
       for (int i = 0 ; i <= lista_parametros.size() - 1 ; i++ ) {

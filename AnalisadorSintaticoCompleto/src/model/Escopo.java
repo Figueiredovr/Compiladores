@@ -38,13 +38,13 @@ public class Escopo {
 
   public boolean add_variavel (Var nova){
     Var variavel;
-    if (!verificar_tipo()) {
+    if (!verificar_tipo(nova.tipo_da_variavel)) {
       return false;
     }else {
       //verifica se a variavel a ser adicionada ja existe nesse escopo
       for (int i = 0 ; i< this.variaveis.size(); i++){
         variavel = (Var) this.variaveis.get(i);
-        if (nova.nome_variavel.equals(variavel.var_nome)) {
+        if (nova.nome_variavel.equals(variavel.nome_variavel)) {
           return false;
         }
       }
@@ -54,25 +54,18 @@ public class Escopo {
   }
 
   public boolean verificar_tipo(String tipo_var ){
-
     // Faz uma busca em profundidade para encontrar o tipo de uma variavel atraves o nome
     ArrayList lista_tipos;
     Var variavel_aux;
-
-    while (escopo.pai != null){
-
-      for(int i = 0; i< this.classes; i++){
-
+    while (pai != null){
+      for(int i = 0; i< this.classes.size(); i++){
         if(classes.contains(tipo_var) || tipos_primitivos.contains(tipo_var) ){
-          return true
+          return true;
         }
-      }
-
-      return false
-
-
-
+      }      
     }
+    return false;
+  }
 
 
 

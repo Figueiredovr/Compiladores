@@ -57,11 +57,14 @@ public class Escopo {
     // Faz uma busca em profundidade para encontrar o tipo de uma variavel atraves o nome
     ArrayList lista_tipos;
     Var variavel_aux;
-    while (pai != null){
-      for(int i = 0; i< this.classes.size(); i++){
-        if(classes.contains(tipo_var) || tipos_primitivos.contains(tipo_var) ){
+    Escopo aux_escopo = this;
+    while (aux_escopo.pai != null){
+      for(int i = 0; i< aux_escopo.classes.size(); i++){
+        if(aux_escopo.classes.contains(tipo_var) || tipos_primitivos.contains(tipo_var) ){
           return true;
         }
+        aux_escopo = aux_escopo.pai;
+        
       }      
     }
     return false;

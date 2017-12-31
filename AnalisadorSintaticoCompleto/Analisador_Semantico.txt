@@ -1,0 +1,8 @@
+
+Linha: 1 - Estado global constates - estado semantico nome 
+
+Linha: 2 - Estado global constates - estado semantico nome 
+
+Linha: 2 - Estado global dec_variavel - estado semantico nome 
+
+Analise Semantica Concluída!

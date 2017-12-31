@@ -85,7 +85,7 @@ public class AnalisadorSintatico {
                       variavel_atual.nome_variavel = lexema;
                       //escopo_atual.variaveis.add(variavel_atual);
                       if (!escopo_atual.add_variavel(variavel_atual)) {
-                          salvarArq2.printf("Linha: %s - Variavel ja existe nesse escopo ou tipo é invalido.", linhaAtual);
+                          salvarArq2.printf("\nLinha: %s - Estado global %s - estado semantico %s \n", linhaAtual, estado_global, estado_semantico);
                       }
 
                     } else if(estado_semantico.equals("init")){
@@ -104,8 +104,9 @@ public class AnalisadorSintatico {
                         case "nome":
                             variavel_atual.nome_variavel = lexema;
                             if (!escopo_atual.add_variavel(variavel_atual)) {
-                                salvarArq2.printf("Linha: %s - Variavel ja existe nesse escopo ou tipo é invalido.", linhaAtual);
+                                salvarArq2.printf("\nLinha: %s - Estado global %s - estado semantico %s \n", linhaAtual, estado_global, estado_semantico);
                             }
+                            estado_semantico = "espera";
                             break;
 
                         case "init":
@@ -114,9 +115,13 @@ public class AnalisadorSintatico {
 
                         case "dec_classe":
                         if (!escopo_atual.add_variavel(variavel_atual)) {
-                            salvarArq2.printf("Linha: %s - Variavel ja existe nesse escopo ou tipo é invalido.", linhaAtual);
+                            salvarArq2.printf("\nLinha: %s - Estado global %s - estado semantico %s \n", linhaAtual, estado_global, estado_semantico);
                         }
                             break;
+
+                        case "espera":
+
+                        break;
 
                         default :
                             break;
@@ -195,7 +200,7 @@ public class AnalisadorSintatico {
       String tipo_aux = (String) lista_tipos.get(0);
       for (int i = 0 ; i <= lista_tipos.size() - 1 ; i++ ) {
           if (!(lista_tipos.get(i).equals(tipo_aux))) {
-                salvarArq2.printf("Linha: %s - Erro de compatibilidade de tipos.", linhaAtual);
+                salvarArq2.printf("Linha: %s - Erro de compatibilidade de tipos.\n", linhaAtual);
           }
       }
 
@@ -208,7 +213,7 @@ public class AnalisadorSintatico {
 
       for (int i = 0 ; i <= lista_parametros.size() - 1 ; i++ ) {
           if (!(lista_parametros.get(i).equals(tipo_aux))) {
-                salvarArq2.printf("Linha: %s - Erro de compatibilidade de parametros.", linhaAtual);
+                salvarArq2.printf("Linha: %s - Erro de compatibilidade de parametros.\n", linhaAtual);
           }
       }
 
@@ -284,8 +289,8 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-        salvarArq.printf("Analise Sintática Concluída!");
-        salvarArq2.printf("Analise Semantica Concluída!");
+        salvarArq.printf("\nAnalise Sintática Concluída!\n");
+        salvarArq2.printf("\nAnalise Semantica Concluída!\n");
         arq.close();
         arq2.close();
 

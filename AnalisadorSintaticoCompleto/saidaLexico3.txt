@@ -27,7 +27,7 @@
 12 a Identificador
 12 ; Delimitador
 13 int Palavra_Reservada
-13 a Identificador
+13 b Identificador
 13 ; Delimitador
 14 int Palavra_Reservada
 14 c Identificador

@@ -19,6 +19,7 @@ public class Escopo {
 
   public Escopo (){
 
+    this.pai = null;
     tipos_primitivos.add("int");
     tipos_primitivos.add("bool");
     tipos_primitivos.add("string");
@@ -48,6 +49,7 @@ public class Escopo {
           return false;
         }
       }
+
       this.variaveis.add(nova);
       return true;
     }
@@ -55,18 +57,20 @@ public class Escopo {
 
   public boolean verificar_tipo(String tipo_var ){
     // Faz uma busca em profundidade para encontrar o tipo de uma variavel atraves o nome
-    ArrayList lista_tipos;
-    Var variavel_aux;
-    Escopo aux_escopo = this;
-    while (aux_escopo.pai != null){
-      for(int i = 0; i< aux_escopo.classes.size(); i++){
-        if(aux_escopo.classes.contains(tipo_var) || tipos_primitivos.contains(tipo_var) ){
-          return true;
-        }
-        aux_escopo = aux_escopo.pai;
-        
-      }      
-    }
+    Escopo escopo;
+
+    if(this.classes.contains(tipo_var) || this.tipos_primitivos.contains(tipo_var)){
+    return true;
+    }else if(this.pai != null){
+        escopo = this.pai;
+        while (escopo.pai != null){
+               if(this.classes.contains(tipo_var) || this.tipos_primitivos.contains(tipo_var)){
+                     return true;
+               }
+               escopo = escopo.pai;
+         }
+
+     }
     return false;
   }
 
